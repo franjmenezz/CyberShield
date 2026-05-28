@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_cyber_alert" model="ir.sequence">
+            <field name="name">CyberShield Alert Reference</field>
+            <field name="code">cyber.alert</field>
+            <field name="prefix">CS-ALR-%(year)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_cyber_incident" model="ir.sequence">
+            <field name="name">CyberShield Incident Reference</field>
+            <field name="code">cyber.incident</field>
+            <field name="prefix">CS-INC-%(year)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_cyber_report" model="ir.sequence">
+            <field name="name">CyberShield Report Reference</field>
+            <field name="code">cyber.report</field>
+            <field name="prefix">CS-RPT-%(year)s-</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+</odoo>

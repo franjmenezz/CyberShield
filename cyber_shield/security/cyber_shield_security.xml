@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CyberShield — Security Groups & Rules
+    Copyright (c) 2025 Francisco José Jiménez Pozo
+    All rights reserved. Proprietary and confidential.
+-->
+<odoo>
+    <data>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             SECURITY CATEGORY
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="module_category_cyber_shield" model="ir.module.category">
+            <field name="name">CyberShield</field>
+            <field name="description">CyberShield — Enterprise SIEM for ODOO 18</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ROLE 1 — CYBERSHIELD ADMINISTRATOR
+             Full access to all features including configuration and token management
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="group_cyber_admin" model="res.groups">
+            <field name="name">CyberShield Administrator</field>
+            <field name="category_id" ref="module_category_cyber_shield"/>
+            <field name="comment">
+                Full access to all CyberShield features including configuration,
+                agent token management, and system settings.
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ROLE 2 — SENIOR ANALYST
+             Full operational access, no configuration
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="group_cyber_senior_analyst" model="res.groups">
+            <field name="name">CyberShield Senior Analyst</field>
+            <field name="category_id" ref="module_category_cyber_shield"/>
+            <field name="implied_ids" eval="[(4, ref('group_cyber_analyst'))]"/>
+            <field name="comment">
+                Full access to incidents, alerts, vulnerabilities and reports.
+                Cannot access system configuration or agent tokens.
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ROLE 3 — ANALYST
+             Operational access — create/edit alerts and incidents
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="group_cyber_analyst" model="res.groups">
+            <field name="name">CyberShield Analyst</field>
+            <field name="category_id" ref="module_category_cyber_shield"/>
+            <field name="implied_ids" eval="[(4, ref('group_cyber_readonly'))]"/>
+            <field name="comment">
+                Can create and manage alerts and incidents.
+                Read-only access to logs and devices.
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ROLE 4 — AUDITOR
+             Read-only access to everything + report generation
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="group_cyber_auditor" model="res.groups">
+            <field name="name">CyberShield Auditor</field>
+            <field name="category_id" ref="module_category_cyber_shield"/>
+            <field name="implied_ids" eval="[(4, ref('group_cyber_readonly'))]"/>
+            <field name="comment">
+                Read-only access to all data plus report generation capability.
+                Cannot modify any records.
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ROLE 5 — READ ONLY
+             Dashboard and basic visibility only
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="group_cyber_readonly" model="res.groups">
+            <field name="name">CyberShield Read Only</field>
+            <field name="category_id" ref="module_category_cyber_shield"/>
+            <field name="comment">
+                Dashboard view and read-only access to alerts and device status.
+                Cannot access detailed logs or sensitive information.
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             RECORD RULES — Row-level security
+        ══════════════════════════════════════════════════════════════════════ -->
+
+        <!-- Logs: Read-only for everyone (immutability enforcement at model level) -->
+        <record id="rule_cyber_log_global" model="ir.rule">
+            <field name="name">CyberShield: Logs — Global Read Only</field>
+            <field name="model_id" ref="model_cyber_log"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Admin: Full access to logs via API only -->
+        <record id="rule_cyber_log_admin" model="ir.rule">
+            <field name="name">CyberShield: Logs — Admin Create via API</field>
+            <field name="model_id" ref="model_cyber_log"/>
+            <field name="groups" eval="[(4, ref('group_cyber_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

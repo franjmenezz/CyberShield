@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CyberShield — Notification Center Views
+    Copyright (c) 2025 Francisco José Jiménez Pozo
+    All rights reserved. Proprietary and confidential.
+-->
+<odoo>
+    <data>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             NOTIFICATION CHANNEL — VIEWS
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="view_cyber_channel_list" model="ir.ui.view">
+            <field name="name">cyber.notification.channel.list</field>
+            <field name="model">cyber.notification.channel</field>
+            <field name="arch" type="xml">
+                <list string="Notification Channels">
+                    <field name="name" string="Channel Name"/>
+                    <field name="channel_type" string="Type"/>
+                    <field name="description" string="Description"/>
+                    <field name="active" string="Active" widget="boolean"/>
+                    <field name="notification_count" string="Sent"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_cyber_channel_form" model="ir.ui.view">
+            <field name="name">cyber.notification.channel.form</field>
+            <field name="model">cyber.notification.channel</field>
+            <field name="arch" type="xml">
+                <form string="Notification Channel">
+                    <header>
+                        <button name="action_test_channel" type="object"
+                                string="🧪 Send Test Notification"
+                                class="btn-primary"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="Channel Name"/></h1>
+                        </div>
+
+                        <group string="General">
+                            <field name="channel_type"/>
+                            <field name="description"/>
+                            <field name="active"/>
+                        </group>
+
+                        <!-- ODOO Internal -->
+                        <group string="ODOO Users to Notify"
+                               attrs="{'invisible': [('channel_type', '!=', 'odoo')]}">
+                            <field name="odoo_user_ids" nolabel="1" widget="many2many_tags"/>
+                        </group>
+
+                        <!-- Email -->
+                        <group string="Email Configuration"
+                               attrs="{'invisible': [('channel_type', '!=', 'email')]}">
+                            <field name="email_to"
+                                   placeholder="admin@company.com, security@company.com"/>
+                            <field name="email_cc" placeholder="manager@company.com"/>
+                        </group>
+
+                        <!-- Webhook -->
+                        <group string="Webhook Configuration"
+                               attrs="{'invisible': [('channel_type', '!=', 'webhook')]}"
+                               groups="cyber_shield.group_cyber_admin">
+                            <field name="webhook_url"
+                                   placeholder="https://api.telegram.org/bot{TOKEN}/sendMessage"/>
+                            <field name="webhook_method"/>
+                            <field name="webhook_timeout"/>
+                        </group>
+
+                        <group string="Webhook Payload Template"
+                               attrs="{'invisible': [('channel_type', '!=', 'webhook')]}"
+                               groups="cyber_shield.group_cyber_admin">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Available variables:</strong>
+                                <code>{title}</code> <code>{message}</code>
+                                <code>{severity}</code> <code>{device}</code>
+                                <code>{reference}</code>
+                                <br/>
+                                <strong>Telegram example:</strong>
+                                <code>{"chat_id": "-100123", "text": "{message}", "parse_mode": "HTML"}</code>
+                            </div>
+                            <field name="webhook_payload_template" nolabel="1"
+                                   placeholder='{"chat_id": "-100123456789", "text": "{message}", "parse_mode": "HTML"}'
+                                   widget="text"/>
+                        </group>
+
+                        <group string="Custom Headers (JSON)"
+                               attrs="{'invisible': [('channel_type', '!=', 'webhook')]}"
+                               groups="cyber_shield.group_cyber_admin">
+                            <field name="webhook_headers" nolabel="1"
+                                   placeholder='{"Authorization": "Bearer your-token"}'
+                                   widget="text"/>
+                        </group>
+
+                        <!-- Stats -->
+                        <group string="Statistics" readonly="1">
+                            <field name="notification_count"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_cyber_channels" model="ir.actions.act_window">
+            <field name="name">Notification Channels</field>
+            <field name="res_model">cyber.notification.channel</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No channels configured yet.</p>
+                <p>Add a channel to start receiving security notifications.</p>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             NOTIFICATION TEMPLATE — VIEWS
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="view_cyber_template_list" model="ir.ui.view">
+            <field name="name">cyber.notification.template.list</field>
+            <field name="model">cyber.notification.template</field>
+            <field name="arch" type="xml">
+                <list string="Notification Templates">
+                    <field name="name"/>
+                    <field name="severity" decoration-danger="severity == 'critical'"
+                           decoration-warning="severity == 'high'"/>
+                    <field name="event_type"/>
+                    <field name="subject_template"/>
+                    <field name="active" widget="boolean"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_cyber_template_form" model="ir.ui.view">
+            <field name="name">cyber.notification.template.form</field>
+            <field name="model">cyber.notification.template</field>
+            <field name="arch" type="xml">
+                <form string="Notification Template">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="Template Name"/></h1>
+                        </div>
+                        <group string="Applies to">
+                            <field name="severity"/>
+                            <field name="event_type"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Subject / Title">
+                            <div class="alert alert-info">
+                                <strong>Available variables:</strong>
+                                <code>{severity}</code> <code>{name}</code>
+                                <code>{device}</code> <code>{reference}</code>
+                                <code>{timestamp}</code> <code>{description}</code>
+                                <code>{mitre_tactic}</code> <code>{mitre_technique}</code>
+                                <code>{source_ip}</code> <code>{assigned_to}</code>
+                            </div>
+                            <field name="subject_template" nolabel="1"
+                                   placeholder="[{severity}] CyberShield Alert: {name}"/>
+                        </group>
+                        <group string="Body">
+                            <field name="body_template" nolabel="1" widget="text"
+                                   placeholder="Alert: {name}&#10;Device: {device}&#10;Severity: {severity}&#10;Time: {timestamp}&#10;&#10;{description}"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_cyber_templates" model="ir.actions.act_window">
+            <field name="name">Notification Templates</field>
+            <field name="res_model">cyber.notification.template</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ESCALATION RULES — VIEWS
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="view_cyber_rule_list" model="ir.ui.view">
+            <field name="name">cyber.escalation.rule.list</field>
+            <field name="model">cyber.escalation.rule</field>
+            <field name="arch" type="xml">
+                <list string="Escalation Rules" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="trigger_severity"
+                           decoration-danger="trigger_severity == 'critical'"
+                           decoration-warning="trigger_severity == 'high'"/>
+                    <field name="trigger_event"/>
+                    <field name="channel_ids" widget="many2many_tags"/>
+                    <field name="delay_minutes"/>
+                    <field name="active" widget="boolean"/>
+                    <field name="trigger_count" string="Triggers" readonly="1"/>
+                    <field name="last_triggered" readonly="1"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_cyber_rule_form" model="ir.ui.view">
+            <field name="name">cyber.escalation.rule.form</field>
+            <field name="model">cyber.escalation.rule</field>
+            <field name="arch" type="xml">
+                <form string="Escalation Rule">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="Rule Name"/></h1>
+                        </div>
+
+                        <group string="Trigger Conditions">
+                            <group>
+                                <field name="trigger_severity"/>
+                                <field name="trigger_event"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="delay_minutes"/>
+                                <field name="repeat_after_minutes"/>
+                                <field name="max_repeats"/>
+                            </group>
+                        </group>
+
+                        <group string="Filters">
+                            <field name="device_type_filter"/>
+                            <field name="department_filter"
+                                   placeholder="Leave empty for all departments"/>
+                        </group>
+
+                        <group string="Notification">
+                            <field name="channel_ids" widget="many2many_tags"/>
+                            <field name="template_id"
+                                   placeholder="Leave empty to use default template"/>
+                        </group>
+
+                        <group string="Statistics" readonly="1">
+                            <field name="trigger_count"/>
+                            <field name="last_triggered"/>
+                        </group>
+
+                        <field name="description" placeholder="Rule description..."/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_cyber_rules" model="ir.actions.act_window">
+            <field name="name">Escalation Rules</field>
+            <field name="res_model">cyber.escalation.rule</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No escalation rules configured.</p>
+                <p>Create rules to define when and how notifications are sent.</p>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             NOTIFICATION HISTORY — VIEWS
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="view_cyber_notification_list" model="ir.ui.view">
+            <field name="name">cyber.notification.list</field>
+            <field name="model">cyber.notification</field>
+            <field name="arch" type="xml">
+                <list string="Notification History" create="false" edit="false"
+                      decoration-danger="state == 'failed'"
+                      decoration-success="state == 'sent'"
+                      decoration-muted="state == 'skipped'">
+                    <field name="create_date" string="Date"/>
+                    <field name="title" string="Title"/>
+                    <field name="severity" string="Severity"
+                           decoration-danger="severity == 'critical'"
+                           decoration-warning="severity == 'high'"/>
+                    <field name="notification_type" string="Type"/>
+                    <field name="channel_id" string="Channel"/>
+                    <field name="state" string="Status"
+                           decoration-success="state == 'sent'"
+                           decoration-danger="state == 'failed'"/>
+                    <field name="sent_at" string="Sent At"/>
+                    <field name="alert_id" string="Alert"/>
+                    <field name="rule_id" string="Rule"/>
+                    <field name="retry_count" string="Retries"/>
+                    <button name="action_retry" type="object" string="🔄 Retry"
+                            attrs="{'invisible': [('state', '!=', 'failed')]}"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_cyber_notification_form" model="ir.ui.view">
+            <field name="name">cyber.notification.form</field>
+            <field name="model">cyber.notification</field>
+            <field name="arch" type="xml">
+                <form string="Notification" create="false">
+                    <header>
+                        <button name="action_retry" type="object"
+                                string="🔄 Retry" class="btn-primary"
+                                attrs="{'invisible': [('state', '!=', 'failed')]}"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="pending,sent,failed"/>
+                    </header>
+                    <sheet>
+                        <group string="Content">
+                            <field name="title" readonly="1"/>
+                            <field name="severity" readonly="1"/>
+                            <field name="notification_type" readonly="1"/>
+                        </group>
+                        <group string="Delivery">
+                            <group>
+                                <field name="channel_id" readonly="1"/>
+                                <field name="sent_at" readonly="1"/>
+                                <field name="retry_count" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="alert_id" readonly="1"/>
+                                <field name="incident_id" readonly="1"/>
+                                <field name="rule_id" readonly="1"/>
+                                <field name="template_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Message" attrs="{'invisible': [('state', '=', 'failed')]}">
+                            <field name="message" readonly="1" nolabel="1" widget="text"/>
+                        </group>
+                        <group string="Error Details"
+                               attrs="{'invisible': [('state', '!=', 'failed')]}">
+                            <field name="error_message" readonly="1" nolabel="1" widget="text"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_cyber_notification_search" model="ir.ui.view">
+            <field name="name">cyber.notification.search</field>
+            <field name="model">cyber.notification</field>
+            <field name="arch" type="xml">
+                <search string="Search Notifications">
+                    <field name="title"/>
+                    <field name="channel_id"/>
+                    <separator/>
+                    <filter string="Sent" name="sent" domain="[('state','=','sent')]"/>
+                    <filter string="Failed" name="failed" domain="[('state','=','failed')]"/>
+                    <filter string="Critical" name="critical" domain="[('severity','=','critical')]"/>
+                    <filter string="Today" name="today"
+                            domain="[('create_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Channel" name="group_channel" context="{'group_by': 'channel_id'}"/>
+                        <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Severity" name="group_severity" context="{'group_by': 'severity'}"/>
+                        <filter string="Type" name="group_type" context="{'group_by': 'notification_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_cyber_notifications" model="ir.actions.act_window">
+            <field name="name">Notification History</field>
+            <field name="res_model">cyber.notification</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_cyber_notification_search"/>
+        </record>
+
+        <record id="action_cyber_notifications_failed" model="ir.actions.act_window">
+            <field name="name">Failed Notifications</field>
+            <field name="res_model">cyber.notification</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('state', '=', 'failed')]</field>
+        </record>
+
+    </data>
+</odoo>

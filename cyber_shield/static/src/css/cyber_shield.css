@@ -1,0 +1,39 @@
+/* CyberShield — Styles */
+/* Copyright (c) 2025 Francisco José Jiménez Pozo — All rights reserved. */
+
+:root {
+    --cs-purple: #4f46e5;
+    --cs-red: #dc2626;
+    --cs-amber: #d97706;
+    --cs-green: #16a34a;
+    --cs-blue: #2563eb;
+    --cs-dark: #0f172a;
+    --cs-gray: #64748b;
+    --cs-border: #e2e8f0;
+}
+
+/* Severity badges */
+.cs-badge-critical { background: #fef2f2; color: #dc2626; font-weight: 700; padding: 2px 8px; border-radius: 99px; font-size: 12px; }
+.cs-badge-high     { background: #fffbeb; color: #d97706; font-weight: 700; padding: 2px 8px; border-radius: 99px; font-size: 12px; }
+.cs-badge-medium   { background: #eff6ff; color: #2563eb; font-weight: 700; padding: 2px 8px; border-radius: 99px; font-size: 12px; }
+.cs-badge-low      { background: #f0fdf4; color: #16a34a; font-weight: 700; padding: 2px 8px; border-radius: 99px; font-size: 12px; }
+.cs-badge-info     { background: #f8fafc; color: #64748b; font-weight: 700; padding: 2px 8px; border-radius: 99px; font-size: 12px; }
+
+/* Dashboard stat cards */
+.cs-stat-card { border-radius: 12px; padding: 20px; border: 1px solid var(--cs-border); }
+.cs-stat-card.critical { border-left: 4px solid var(--cs-red); background: #fef2f2; }
+.cs-stat-card.warning  { border-left: 4px solid var(--cs-amber); background: #fffbeb; }
+.cs-stat-card.success  { border-left: 4px solid var(--cs-green); background: #f0fdf4; }
+.cs-stat-card.info     { border-left: 4px solid var(--cs-purple); background: #eef2ff; }
+
+/* SLA breached highlight */
+.cs-sla-breached { color: var(--cs-red) !important; font-weight: 700 !important; }
+
+/* Immutable log indicator */
+.cs-immutable-badge::after {
+    content: "🔒 IMMUTABLE";
+    font-size: 10px;
+    color: var(--cs-gray);
+    margin-left: 8px;
+    font-weight: 600;
+}

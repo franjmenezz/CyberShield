@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CyberShield — Notification Center Default Data
+    Copyright (c) 2025 Francisco José Jiménez Pozo
+    All rights reserved. Proprietary and confidential.
+-->
+<odoo>
+    <data noupdate="1">
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             DEFAULT TEMPLATES
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="template_critical_default" model="cyber.notification.template">
+            <field name="name">Default — Critical Alert</field>
+            <field name="severity">critical</field>
+            <field name="event_type">any</field>
+            <field name="subject_template">🔴 [CRITICAL] CyberShield: {name}</field>
+            <field name="body_template">🔴 CRITICAL SECURITY ALERT
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+Alert:       {name}
+Reference:   {reference}
+Device:      {device}
+Time:        {timestamp}
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+Description: {description}
+MITRE:       {mitre_tactic} / {mitre_technique}
+Source IP:   {source_ip}
+Assigned to: {assigned_to}
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ IMMEDIATE ACTION REQUIRED
+SLA: 1 hour to resolve
+
+CyberShield v1.0.0</field>
+        </record>
+
+        <record id="template_high_default" model="cyber.notification.template">
+            <field name="name">Default — High Alert</field>
+            <field name="severity">high</field>
+            <field name="event_type">any</field>
+            <field name="subject_template">🟠 [HIGH] CyberShield: {name}</field>
+            <field name="body_template">🟠 HIGH SEVERITY ALERT
+━━━━━━━━━━━━━━━━━━━━━━━━
+Alert:       {name}
+Reference:   {reference}
+Device:      {device}
+Time:        {timestamp}
+━━━━━━━━━━━━━━━━━━━━━━━━
+Description: {description}
+Source IP:   {source_ip}
+Assigned to: {assigned_to}
+━━━━━━━━━━━━━━━━━━━━━━━━
+SLA: 4 hours to resolve
+
+CyberShield v1.0.0</field>
+        </record>
+
+        <record id="template_medium_default" model="cyber.notification.template">
+            <field name="name">Default — Medium Alert</field>
+            <field name="severity">medium</field>
+            <field name="event_type">any</field>
+            <field name="subject_template">🟡 [MEDIUM] CyberShield: {name}</field>
+            <field name="body_template">🟡 MEDIUM SEVERITY ALERT
+━━━━━━━━━━━━━━━━━━
+Alert:   {name}
+Ref:     {reference}
+Device:  {device}
+Time:    {timestamp}
+━━━━━━━━━━━━━━━━━━
+{description}
+
+CyberShield v1.0.0</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             DEFAULT CHANNELS
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="channel_odoo_admin" model="cyber.notification.channel">
+            <field name="name">ODOO Internal — Administrators</field>
+            <field name="channel_type">odoo</field>
+            <field name="description">Sends notifications to all CyberShield administrators via ODOO internal messaging</field>
+        </record>
+
+        <record id="channel_webhook_example" model="cyber.notification.channel">
+            <field name="name">Webhook (Example — configure before use)</field>
+            <field name="channel_type">webhook</field>
+            <field name="active">False</field>
+            <field name="description">Example webhook channel. Configure URL and payload before activating.</field>
+            <field name="webhook_url">https://example.com/webhook</field>
+            <field name="webhook_method">POST</field>
+            <field name="webhook_timeout">10</field>
+            <field name="webhook_payload_template">{"text": "{message}"}</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             DEFAULT ESCALATION RULES
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="rule_critical_immediate" model="cyber.escalation.rule">
+            <field name="name">Critical Alert — Immediate Notification</field>
+            <field name="sequence">1</field>
+            <field name="trigger_severity">critical</field>
+            <field name="trigger_event">alert_created</field>
+            <field name="delay_minutes">0</field>
+            <field name="repeat_after_minutes">30</field>
+            <field name="max_repeats">3</field>
+            <field name="channel_ids" eval="[(4, ref('channel_odoo_admin'))]"/>
+            <field name="template_id" ref="template_critical_default"/>
+            <field name="description">Immediately notify administrators when a CRITICAL alert is created. Repeat every 30 min if not acknowledged (max 3 times).</field>
+        </record>
+
+        <record id="rule_high_notify" model="cyber.escalation.rule">
+            <field name="name">High Alert — Notify within 5 minutes</field>
+            <field name="sequence">2</field>
+            <field name="trigger_severity">high</field>
+            <field name="trigger_event">alert_created</field>
+            <field name="delay_minutes">5</field>
+            <field name="repeat_after_minutes">60</field>
+            <field name="max_repeats">2</field>
+            <field name="channel_ids" eval="[(4, ref('channel_odoo_admin'))]"/>
+            <field name="template_id" ref="template_high_default"/>
+            <field name="description">Notify administrators for HIGH alerts with a 5-minute delay.</field>
+        </record>
+
+        <record id="rule_sla_breach" model="cyber.escalation.rule">
+            <field name="name">SLA Breached — Escalate immediately</field>
+            <field name="sequence">3</field>
+            <field name="trigger_severity">high</field>
+            <field name="trigger_event">sla_breached</field>
+            <field name="delay_minutes">0</field>
+            <field name="repeat_after_minutes">0</field>
+            <field name="max_repeats">1</field>
+            <field name="channel_ids" eval="[(4, ref('channel_odoo_admin'))]"/>
+            <field name="description">Escalate immediately when an alert's SLA deadline is breached.</field>
+        </record>
+
+        <!-- Sequence for notifications -->
+        <record id="seq_cyber_notification" model="ir.sequence">
+            <field name="name">CyberShield Notification Reference</field>
+            <field name="code">cyber.notification</field>
+            <field name="prefix">CS-NOT-%(year)s-</field>
+            <field name="padding">5</field>
+        </record>
+
+    </data>
+</odoo>

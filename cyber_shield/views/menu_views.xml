@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CyberShield — Menu Structure
+    Copyright (c) 2025 Francisco José Jiménez Pozo
+    All rights reserved. Proprietary and confidential.
+-->
+<odoo>
+    <data>
+
+        <!-- ROOT -->
+        <menuitem id="menu_cyber_shield_root" name="CyberShield" sequence="99"
+                  groups="cyber_shield.group_cyber_readonly"/>
+
+        <!-- DASHBOARD -->
+        <menuitem id="menu_cyber_dashboard" name="Dashboard"
+                  parent="menu_cyber_shield_root" action="action_cyber_dashboard"
+                  sequence="1" groups="cyber_shield.group_cyber_readonly"/>
+
+        <!-- DEVICES -->
+        <menuitem id="menu_cyber_devices" name="Devices"
+                  parent="menu_cyber_shield_root" sequence="2"
+                  groups="cyber_shield.group_cyber_readonly"/>
+        <menuitem id="menu_cyber_workstations" name="Workstations (PCs)"
+                  parent="menu_cyber_devices" action="action_cyber_workstations"
+                  sequence="1" groups="cyber_shield.group_cyber_readonly"/>
+        <menuitem id="menu_cyber_servers" name="Servers"
+                  parent="menu_cyber_devices" action="action_cyber_servers"
+                  sequence="2" groups="cyber_shield.group_cyber_readonly"/>
+        <menuitem id="menu_cyber_all_devices" name="All Devices"
+                  parent="menu_cyber_devices" action="action_cyber_devices"
+                  sequence="3" groups="cyber_shield.group_cyber_analyst"/>
+
+        <!-- LOGS -->
+        <menuitem id="menu_cyber_logs" name="Activity Logs"
+                  parent="menu_cyber_shield_root" sequence="3"
+                  groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_logs_all" name="All Logs"
+                  parent="menu_cyber_logs" action="action_cyber_logs"
+                  sequence="1" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_logs_critical" name="Critical Events"
+                  parent="menu_cyber_logs" action="action_cyber_logs_critical"
+                  sequence="2" groups="cyber_shield.group_cyber_analyst"/>
+
+        <!-- ALERTS -->
+        <menuitem id="menu_cyber_alerts" name="Alerts"
+                  parent="menu_cyber_shield_root" sequence="4"
+                  groups="cyber_shield.group_cyber_readonly"/>
+        <menuitem id="menu_cyber_alerts_all" name="All Alerts"
+                  parent="menu_cyber_alerts" action="action_cyber_alerts"
+                  sequence="1" groups="cyber_shield.group_cyber_readonly"/>
+        <menuitem id="menu_cyber_alerts_open" name="Open Alerts"
+                  parent="menu_cyber_alerts" action="action_cyber_alerts_open"
+                  sequence="2" groups="cyber_shield.group_cyber_readonly"/>
+        <menuitem id="menu_cyber_alerts_critical" name="Critical Alerts"
+                  parent="menu_cyber_alerts" action="action_cyber_alerts_critical"
+                  sequence="3" groups="cyber_shield.group_cyber_readonly"/>
+
+        <!-- VULNERABILITIES -->
+        <menuitem id="menu_cyber_vulnerabilities" name="Vulnerabilities"
+                  parent="menu_cyber_shield_root" sequence="5"
+                  groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_vulns_all" name="All Vulnerabilities"
+                  parent="menu_cyber_vulnerabilities" action="action_cyber_vulnerabilities"
+                  sequence="1" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_vulns_open" name="Open Vulnerabilities"
+                  parent="menu_cyber_vulnerabilities" action="action_cyber_vulnerabilities_open"
+                  sequence="2" groups="cyber_shield.group_cyber_analyst"/>
+
+        <!-- INCIDENTS -->
+        <menuitem id="menu_cyber_incidents" name="Incidents"
+                  parent="menu_cyber_shield_root" sequence="6"
+                  groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_incidents_all" name="All Incidents"
+                  parent="menu_cyber_incidents" action="action_cyber_incidents"
+                  sequence="1" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_incidents_open" name="Active Incidents"
+                  parent="menu_cyber_incidents" action="action_cyber_incidents_open"
+                  sequence="2" groups="cyber_shield.group_cyber_analyst"/>
+
+        <!-- 📣 NOTIFICATION CENTER -->
+        <menuitem id="menu_cyber_notifications" name="📣 Notification Center"
+                  parent="menu_cyber_shield_root" sequence="7"
+                  groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_notif_history" name="Notification History"
+                  parent="menu_cyber_notifications" action="action_cyber_notifications"
+                  sequence="1" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_notif_failed" name="Failed Notifications"
+                  parent="menu_cyber_notifications" action="action_cyber_notifications_failed"
+                  sequence="2" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_notif_channels" name="Channels"
+                  parent="menu_cyber_notifications" action="action_cyber_channels"
+                  sequence="3" groups="cyber_shield.group_cyber_admin"/>
+        <menuitem id="menu_cyber_notif_templates" name="Templates"
+                  parent="menu_cyber_notifications" action="action_cyber_templates"
+                  sequence="4" groups="cyber_shield.group_cyber_admin"/>
+        <menuitem id="menu_cyber_notif_rules" name="Escalation Rules"
+                  parent="menu_cyber_notifications" action="action_cyber_rules"
+                  sequence="5" groups="cyber_shield.group_cyber_admin"/>
+
+        <!-- REPORTS -->
+        <menuitem id="menu_cyber_reports" name="Reports"
+                  parent="menu_cyber_shield_root" sequence="8"
+                  groups="cyber_shield.group_cyber_auditor"/>
+        <menuitem id="menu_cyber_reports_all" name="Audit Reports"
+                  parent="menu_cyber_reports" action="action_cyber_reports"
+                  sequence="1" groups="cyber_shield.group_cyber_auditor"/>
+
+        <!-- CONFIGURATION -->
+        <menuitem id="menu_cyber_config" name="Configuration"
+                  parent="menu_cyber_shield_root" sequence="99"
+                  groups="cyber_shield.group_cyber_admin"/>
+        <menuitem id="menu_cyber_config_devices" name="Manage Devices"
+                  parent="menu_cyber_config" action="action_cyber_devices"
+                  sequence="1" groups="cyber_shield.group_cyber_admin"/>
+
+    </data>
+</odoo>
