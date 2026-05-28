@@ -52,3 +52,8 @@ access_cyber_notif_admin,cyber.notification admin,model_cyber_notification,cyber
 access_cyber_notif_senior,cyber.notification senior,model_cyber_notification,cyber_shield.group_cyber_senior_analyst,1,0,0,0
 access_cyber_notif_analyst,cyber.notification analyst,model_cyber_notification,cyber_shield.group_cyber_analyst,1,0,0,0
 access_cyber_notif_auditor,cyber.notification auditor,model_cyber_notification,cyber_shield.group_cyber_auditor,1,0,0,0
+# ── CYBER.VT.ANALYSIS ─────────────────────────────────────────────────────────
+access_cyber_vt_admin,cyber.vt.analysis admin,model_cyber_vt_analysis,cyber_shield.group_cyber_admin,1,1,1,1
+access_cyber_vt_senior,cyber.vt.analysis senior,model_cyber_vt_analysis,cyber_shield.group_cyber_senior_analyst,1,0,1,0
+access_cyber_vt_analyst,cyber.vt.analysis analyst,model_cyber_vt_analysis,cyber_shield.group_cyber_analyst,1,0,0,0
+access_cyber_vt_auditor,cyber.vt.analysis auditor,model_cyber_vt_analysis,cyber_shield.group_cyber_auditor,1,0,0,0

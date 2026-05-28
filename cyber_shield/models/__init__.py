@@ -7,3 +7,4 @@ from . import cyber_vulnerability
 from . import cyber_incident
 from . import cyber_report
 from . import cyber_notification
+from . import cyber_virustotal

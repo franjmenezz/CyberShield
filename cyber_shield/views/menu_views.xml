@@ -6,7 +6,6 @@
 -->
 <odoo>
     <data>
-
         <!-- ROOT -->
         <menuitem id="menu_cyber_shield_root" name="CyberShield" sequence="99"
                   groups="cyber_shield.group_cyber_readonly"/>
@@ -77,9 +76,20 @@
                   parent="menu_cyber_incidents" action="action_cyber_incidents_open"
                   sequence="2" groups="cyber_shield.group_cyber_analyst"/>
 
+        <!-- 🦠 VIRUSTOTAL -->
+        <menuitem id="menu_cyber_virustotal" name="🦠 VirusTotal"
+                  parent="menu_cyber_shield_root" sequence="7"
+                  groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_vt_all" name="All Analyses"
+                  parent="menu_cyber_virustotal" action="action_cyber_vt_analyses"
+                  sequence="1" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_vt_malicious" name="Malicious Indicators"
+                  parent="menu_cyber_virustotal" action="action_cyber_vt_malicious"
+                  sequence="2" groups="cyber_shield.group_cyber_analyst"/>
+
         <!-- 📣 NOTIFICATION CENTER -->
         <menuitem id="menu_cyber_notifications" name="📣 Notification Center"
-                  parent="menu_cyber_shield_root" sequence="7"
+                  parent="menu_cyber_shield_root" sequence="8"
                   groups="cyber_shield.group_cyber_analyst"/>
         <menuitem id="menu_cyber_notif_history" name="Notification History"
                   parent="menu_cyber_notifications" action="action_cyber_notifications"
@@ -99,7 +109,7 @@
 
         <!-- REPORTS -->
         <menuitem id="menu_cyber_reports" name="Reports"
-                  parent="menu_cyber_shield_root" sequence="8"
+                  parent="menu_cyber_shield_root" sequence="9"
                   groups="cyber_shield.group_cyber_auditor"/>
         <menuitem id="menu_cyber_reports_all" name="Audit Reports"
                   parent="menu_cyber_reports" action="action_cyber_reports"
@@ -112,6 +122,5 @@
         <menuitem id="menu_cyber_config_devices" name="Manage Devices"
                   parent="menu_cyber_config" action="action_cyber_devices"
                   sequence="1" groups="cyber_shield.group_cyber_admin"/>
-
     </data>
 </odoo>
