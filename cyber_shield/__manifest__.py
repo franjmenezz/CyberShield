@@ -23,12 +23,14 @@ Copyright (c) 2025 Francisco José Jiménez Pozo. All rights reserved.
     'sequence': 1,
     'depends': ['base', 'mail', 'web'],
     'data': [
+        # Security — ALWAYS first
         'security/cyber_shield_security.xml',
         'security/ir.model.access.csv',
+        # Data
         'data/cyber_shield_data.xml',
         'data/mail_templates.xml',
         'data/notification_data.xml',
-        'views/menu_views.xml',
+        # Views — BEFORE menus (actions must exist before menus reference them)
         'views/dashboard_views.xml',
         'views/device_views.xml',
         'views/log_views.xml',
@@ -38,6 +40,8 @@ Copyright (c) 2025 Francisco José Jiménez Pozo. All rights reserved.
         'views/report_views.xml',
         'views/notification_views.xml',
         'views/virustotal_views.xml',
+        # Menus — ALWAYS last
+        'views/menu_views.xml',
     ],
     'assets': {
         'web.assets_backend': [

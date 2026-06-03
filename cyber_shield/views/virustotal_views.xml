@@ -7,9 +7,7 @@
 <odoo>
     <data>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             VIRUSTOTAL ANALYSIS — LIST VIEW
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- VT ANALYSIS LIST -->
         <record id="view_cyber_vt_list" model="ir.ui.view">
             <field name="name">cyber.vt.analysis.list</field>
             <field name="model">cyber.vt.analysis</field>
@@ -30,19 +28,13 @@
                     <field name="threat_label" string="Threat"/>
                     <field name="device_id" string="Device"/>
                     <field name="alert_id" string="Alert Generated"/>
-                    <button name="action_open_vt_report" type="object"
-                            string="🔗 VT Report"
-                            attrs="{'invisible': [('vt_link', '=', False)]}"/>
-                    <button name="action_reanalyse" type="object"
-                            string="🔄 Re-analyse"/>
                     <field name="vt_link" invisible="1"/>
+                    <button name="action_reanalyse" type="object" string="🔄 Re-analyse"/>
                 </list>
             </field>
         </record>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             VIRUSTOTAL ANALYSIS — FORM VIEW
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- VT ANALYSIS FORM -->
         <record id="view_cyber_vt_form" model="ir.ui.view">
             <field name="name">cyber.vt.analysis.form</field>
             <field name="model">cyber.vt.analysis</field>
@@ -52,7 +44,7 @@
                         <button name="action_open_vt_report" type="object"
                                 string="🔗 Open Full VT Report"
                                 class="btn-primary"
-                                attrs="{'invisible': [('vt_link', '=', False)]}"/>
+                                invisible="not vt_link"/>
                         <button name="action_reanalyse" type="object"
                                 string="🔄 Re-analyse"
                                 class="btn-secondary"/>
@@ -60,35 +52,21 @@
                                statusbar_visible="pending,clean,suspicious,malicious"/>
                     </header>
                     <sheet>
-                        <!-- Malicious banner -->
-                        <div class="alert alert-danger"
-                             attrs="{'invisible': [('state', '!=', 'malicious')]}">
-                            <strong>🔴 MALICIOUS INDICATOR DETECTED</strong> —
-                            <field name="malicious_count" readonly="1"/> out of
-                            <field name="total_engines" readonly="1"/> AV engines flagged this as malicious.
-                            Threat: <field name="threat_label" readonly="1"/>
+                        <div class="alert alert-danger" invisible="state != 'malicious'">
+                            <strong>🔴 MALICIOUS INDICATOR DETECTED</strong>
                         </div>
-
-                        <!-- Suspicious banner -->
-                        <div class="alert alert-warning"
-                             attrs="{'invisible': [('state', '!=', 'suspicious')]}">
-                            <strong>⚠️ SUSPICIOUS INDICATOR</strong> —
-                            Some engines flagged this indicator. Review recommended.
+                        <div class="alert alert-warning" invisible="state != 'suspicious'">
+                            <strong>⚠️ SUSPICIOUS INDICATOR</strong>
                         </div>
-
-                        <!-- Clean banner -->
-                        <div class="alert alert-success"
-                             attrs="{'invisible': [('state', '!=', 'clean')]}">
+                        <div class="alert alert-success" invisible="state != 'clean'">
                             <strong>✅ CLEAN</strong> — No malicious detections found.
                         </div>
-
                         <div class="oe_title">
                             <h1>
                                 <field name="indicator_type" readonly="1"/>:
                                 <field name="indicator_value" readonly="1"/>
                             </h1>
                         </div>
-
                         <group string="Analysis Results">
                             <group>
                                 <field name="indicator_type" readonly="1"/>
@@ -104,7 +82,6 @@
                                 <field name="detection_rate" readonly="1"/>
                             </group>
                         </group>
-
                         <group string="References">
                             <field name="analysed_at" readonly="1"/>
                             <field name="device_id" readonly="1"/>
@@ -112,15 +89,11 @@
                             <field name="alert_id" readonly="1"/>
                             <field name="vt_link" readonly="1" widget="url"/>
                         </group>
-
                         <group string="Raw API Response (Admin only)"
                                groups="cyber_shield.group_cyber_admin">
-                            <field name="raw_response" readonly="1" nolabel="1"
-                                   widget="text"/>
+                            <field name="raw_response" readonly="1" nolabel="1" widget="text"/>
                         </group>
-
-                        <group string="Error Details"
-                               attrs="{'invisible': [('state', '!=', 'error')]}">
+                        <group string="Error Details" invisible="state != 'error'">
                             <field name="error_message" readonly="1" nolabel="1"/>
                         </group>
                     </sheet>
@@ -128,9 +101,7 @@
             </field>
         </record>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             SEARCH VIEW
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- VT SEARCH -->
         <record id="view_cyber_vt_search" model="ir.ui.view">
             <field name="name">cyber.vt.analysis.search</field>
             <field name="model">cyber.vt.analysis</field>
@@ -139,46 +110,28 @@
                     <field name="indicator_value" string="Indicator"/>
                     <field name="device_id"/>
                     <separator/>
-                    <filter string="Malicious" name="malicious"
-                            domain="[('state', '=', 'malicious')]"/>
-                    <filter string="Suspicious" name="suspicious"
-                            domain="[('state', '=', 'suspicious')]"/>
-                    <filter string="Clean" name="clean"
-                            domain="[('state', '=', 'clean')]"/>
-                    <filter string="Hashes" name="hashes"
-                            domain="[('indicator_type', '=', 'hash')]"/>
-                    <filter string="IPs" name="ips"
-                            domain="[('indicator_type', '=', 'ip')]"/>
-                    <filter string="URLs" name="urls"
-                            domain="[('indicator_type', '=', 'url')]"/>
+                    <filter string="Malicious" name="malicious" domain="[('state', '=', 'malicious')]"/>
+                    <filter string="Suspicious" name="suspicious" domain="[('state', '=', 'suspicious')]"/>
+                    <filter string="Clean" name="clean" domain="[('state', '=', 'clean')]"/>
+                    <filter string="Hashes" name="hashes" domain="[('indicator_type', '=', 'hash')]"/>
+                    <filter string="IPs" name="ips" domain="[('indicator_type', '=', 'ip')]"/>
+                    <filter string="URLs" name="urls" domain="[('indicator_type', '=', 'url')]"/>
                     <separator/>
                     <group expand="0" string="Group By">
-                        <filter string="Verdict" name="group_state"
-                                context="{'group_by': 'state'}"/>
-                        <filter string="Type" name="group_type"
-                                context="{'group_by': 'indicator_type'}"/>
-                        <filter string="Device" name="group_device"
-                                context="{'group_by': 'device_id'}"/>
+                        <filter string="Verdict" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Type" name="group_type" context="{'group_by': 'indicator_type'}"/>
+                        <filter string="Device" name="group_device" context="{'group_by': 'device_id'}"/>
                     </group>
                 </search>
             </field>
         </record>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             ACTIONS
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- VT ACTIONS -->
         <record id="action_cyber_vt_analyses" model="ir.actions.act_window">
             <field name="name">VirusTotal Analyses</field>
             <field name="res_model">cyber.vt.analysis</field>
             <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="view_cyber_vt_search"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No VirusTotal analyses yet.
-                </p>
-                <p>Configure your API key in Settings and analyses will appear
-                   automatically when suspicious events are detected.</p>
-            </field>
         </record>
 
         <record id="action_cyber_vt_malicious" model="ir.actions.act_window">
@@ -186,55 +139,6 @@
             <field name="res_model">cyber.vt.analysis</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[('state', 'in', ['malicious', 'suspicious'])]</field>
-        </record>
-
-        <!-- ══════════════════════════════════════════════════════════════════
-             SETTINGS VIEW EXTENSION
-        ══════════════════════════════════════════════════════════════════════ -->
-        <record id="view_cyber_vt_settings" model="ir.ui.view">
-            <field name="name">res.config.settings.cyber.vt</field>
-            <field name="model">res.config.settings</field>
-            <field name="inherit_id" ref="base_setup.action_general_configuration"/>
-            <field name="arch" type="xml">
-                <xpath expr="//div[@id='tools']" position="after">
-                    <div id="cyber_shield_vt" class="col-12 col-lg-6 o_setting_box">
-                        <div class="o_setting_left_pane">
-                            <field name="cyber_vt_enabled"/>
-                        </div>
-                        <div class="o_setting_right_pane">
-                            <label for="cyber_vt_enabled" string="VirusTotal Integration"/>
-                            <div class="text-muted">
-                                Automatically analyse suspicious indicators (hashes, IPs, URLs)
-                                using VirusTotal
-                            </div>
-                            <div attrs="{'invisible': [('cyber_vt_enabled', '=', False)]}">
-                                <div class="row mt16">
-                                    <label for="cyber_vt_api_key" class="col-lg-4 o_light_label"
-                                           string="API Key"/>
-                                    <field name="cyber_vt_api_key" class="col-lg-8"
-                                           placeholder="Your VirusTotal API key"/>
-                                </div>
-                                <div class="row mt8">
-                                    <label for="cyber_vt_auto_scan" class="col-lg-4 o_light_label"
-                                           string="Auto-scan events"/>
-                                    <field name="cyber_vt_auto_scan" class="col-lg-8"/>
-                                </div>
-                                <div class="row mt8">
-                                    <label for="cyber_vt_threshold" class="col-lg-4 o_light_label"
-                                           string="Alert threshold"/>
-                                    <field name="cyber_vt_threshold" class="col-lg-8"/>
-                                </div>
-                                <div class="mt8">
-                                    <a href="https://www.virustotal.com/gui/my-apikey"
-                                       target="_blank" class="btn btn-sm btn-secondary">
-                                        🔑 Get free API key
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </xpath>
-            </field>
         </record>
 
     </data>

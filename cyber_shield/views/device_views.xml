@@ -1,266 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    CyberShield — Device Views
-    Copyright (c) 2025 Francisco José Jiménez Pozo
-    All rights reserved. Proprietary and confidential.
--->
 <odoo>
     <data>
-
-        <!-- ══════════════════════════════════════════════════════════════════
-             DEVICE — KANBAN VIEW
-        ══════════════════════════════════════════════════════════════════════ -->
-        <record id="view_cyber_device_kanban" model="ir.ui.view">
-            <field name="name">cyber.device.kanban</field>
-            <field name="model">cyber.device</field>
-            <field name="arch" type="xml">
-                <kanban class="o_kanban_small_column" default_group_by="device_type">
-                    <field name="id"/>
-                    <field name="name"/>
-                    <field name="display_name"/>
-                    <field name="device_type"/>
-                    <field name="department"/>
-                    <field name="status"/>
-                    <field name="agent_status"/>
-                    <field name="risk_score"/>
-                    <field name="critical_alert_count"/>
-                    <field name="alert_count"/>
-                    <field name="ip_address"/>
-                    <field name="os_type"/>
-                    <field name="last_seen"/>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_card oe_kanban_global_click" style="border-radius:8px;">
-                                <!-- Status indicator bar -->
-                                <div t-attf-style="height:4px;border-radius:8px 8px 0 0;background:#{
-                                    record.status.raw_value == 'critical' ? '#dc2626' :
-                                    record.status.raw_value == 'warning' ? '#d97706' :
-                                    record.status.raw_value == 'active' ? '#16a34a' : '#94a3b8'
-                                };margin:-12px -12px 12px;"/>
-
-                                <div class="oe_kanban_content">
-                                    <!-- Header -->
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <div>
-                                            <strong style="font-size:14px;">
-                                                <t t-esc="record.display_name.value"/>
-                                            </strong>
-                                            <div style="font-size:11px;color:#64748b;">
-                                                <t t-esc="record.ip_address.value"/>
-                                            </div>
-                                        </div>
-                                        <!-- Risk score badge -->
-                                        <span t-attf-style="
-                                            background:#{record.risk_score.raw_value >= 70 ? '#fef2f2' :
-                                                        record.risk_score.raw_value >= 40 ? '#fffbeb' : '#f0fdf4'};
-                                            color:#{record.risk_score.raw_value >= 70 ? '#dc2626' :
-                                                   record.risk_score.raw_value >= 40 ? '#d97706' : '#16a34a'};
-                                            font-weight:700;padding:2px 8px;border-radius:99px;font-size:12px;">
-                                            Risk: <t t-esc="record.risk_score.value"/>
-                                        </span>
-                                    </div>
-
-                                    <!-- Stats row -->
-                                    <div class="d-flex gap-2 mt-2" style="font-size:12px;">
-                                        <span style="color:#dc2626;">
-                                            🚨 <t t-esc="record.critical_alert_count.value"/> critical
-                                        </span>
-                                        <span style="color:#64748b;">
-                                            ⚠️ <t t-esc="record.alert_count.value"/> alerts
-                                        </span>
-                                    </div>
-
-                                    <!-- Agent status -->
-                                    <div class="mt-2" style="font-size:11px;">
-                                        <span t-attf-style="color:#{
-                                            record.agent_status.raw_value == 'connected' ? '#16a34a' :
-                                            record.agent_status.raw_value == 'disconnected' ? '#dc2626' : '#94a3b8'
-                                        };">
-                                            ● <t t-esc="record.agent_status.value"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
-
-        <!-- ══════════════════════════════════════════════════════════════════
-             DEVICE — LIST VIEW
-        ══════════════════════════════════════════════════════════════════════ -->
         <record id="view_cyber_device_list" model="ir.ui.view">
             <field name="name">cyber.device.list</field>
             <field name="model">cyber.device</field>
             <field name="arch" type="xml">
-                <list string="Devices" decoration-danger="status == 'critical'"
-                      decoration-warning="status == 'warning'"
-                      decoration-muted="status == 'offline'">
+                <list string="Devices">
                     <field name="display_name" string="Device"/>
                     <field name="device_type" string="Type"/>
                     <field name="department" string="Department"/>
-                    <field name="os_type" string="OS"/>
                     <field name="ip_address" string="IP"/>
-                    <field name="status" string="Status"
-                           decoration-danger="status == 'critical'"
-                           decoration-warning="status == 'warning'"
-                           decoration-success="status == 'active'"/>
+                    <field name="status" string="Status"/>
                     <field name="agent_status" string="Agent"/>
-                    <field name="risk_score" string="Risk" widget="progressbar"
-                           options="{'overflow': 'danger'}"/>
-                    <field name="critical_alert_count" string="Critical"/>
-                    <field name="alert_count" string="Alerts"/>
+                    <field name="risk_score" string="Risk"/>
                     <field name="last_seen" string="Last Seen"/>
-                    <field name="criticality" string="Criticality"/>
                 </list>
             </field>
         </record>
-
-        <!-- ══════════════════════════════════════════════════════════════════
-             DEVICE — FORM VIEW
-        ══════════════════════════════════════════════════════════════════════ -->
         <record id="view_cyber_device_form" model="ir.ui.view">
             <field name="name">cyber.device.form</field>
             <field name="model">cyber.device</field>
             <field name="arch" type="xml">
                 <form string="Device">
-                    <!-- Status bar -->
-                    <header>
-                        <field name="status" widget="statusbar"
-                               statusbar_visible="active,warning,critical,offline"/>
-                        <button name="action_regenerate_token" type="object"
-                                string="Regenerate Token"
-                                class="btn-secondary"
-                                groups="cyber_shield.group_cyber_admin"/>
-                    </header>
-
                     <sheet>
-                        <!-- Risk score banner -->
-                        <div class="alert alert-danger" role="alert"
-                             attrs="{'invisible': [('risk_score', '&lt;', 70)]}">
-                            <strong>⚠️ HIGH RISK DEVICE</strong> — Risk Score: <field name="risk_score" readonly="1"/>
-                        </div>
-
-                        <!-- Title -->
                         <div class="oe_title">
-                            <h1>
-                                <field name="name" placeholder="Device Name (e.g. Diseño EQ1)"/>
-                            </h1>
-                            <h3 style="color:#64748b;">
-                                <field name="display_name" readonly="1"/>
-                            </h3>
+                            <h1><field name="name" placeholder="Device Name"/></h1>
                         </div>
-
-                        <!-- Identity group -->
-                        <group string="Identity">
-                            <group>
-                                <field name="device_uid" readonly="1"/>
+                        <group>
+                            <group string="Identity">
                                 <field name="device_type"/>
                                 <field name="department"/>
-                                <field name="criticality"
-                                       decoration-danger="criticality == 'critical'"
-                                       decoration-warning="criticality == 'high'"/>
-                                <field name="location"/>
+                                <field name="criticality"/>
+                                <field name="ip_address"/>
+                                <field name="os_type"/>
                             </group>
-                            <group>
-                                <field name="agent_status"
-                                       decoration-success="agent_status == 'connected'"
-                                       decoration-danger="agent_status == 'disconnected'"/>
-                                <field name="wazuh_agent_id" readonly="1"/>
+                            <group string="Agent">
+                                <field name="agent_status"/>
                                 <field name="last_seen" readonly="1"/>
-                                <field name="agent_version" readonly="1"/>
-                                <field name="agent_token" readonly="1"
-                                       groups="cyber_shield.group_cyber_admin"/>
+                                <field name="status"/>
+                                <field name="risk_score" readonly="1"/>
                             </group>
                         </group>
-
-                        <!-- Technical group -->
-                        <group string="Technical Information">
-                            <group>
-                                <field name="os_type"/>
-                                <field name="os_version"/>
-                                <field name="ip_address"/>
+                        <group>
+                            <group string="Assignment">
+                                <field name="assigned_user_id"/>
+                                <field name="responsible_id"/>
+                            </group>
+                            <group string="Technical">
+                                <field name="hostname"/>
                                 <field name="mac_address"/>
                             </group>
-                            <group>
-                                <field name="hostname"/>
-                                <field name="serial_number"/>
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                            </group>
                         </group>
-
-                        <!-- Assignment group -->
-                        <group string="Assignment">
-                            <field name="assigned_user_id"/>
-                            <field name="responsible_id"/>
-                        </group>
-
-                        <!-- Stats -->
-                        <group string="Security Statistics" readonly="1">
-                            <group>
-                                <field name="risk_score" widget="progressbar"/>
-                                <field name="log_count"/>
-                                <field name="alert_count"/>
-                            </group>
-                            <group>
-                                <field name="critical_alert_count"/>
-                                <field name="vulnerability_count"/>
-                                <field name="incident_count"/>
-                            </group>
-                        </group>
-
-                        <!-- Notebook tabs -->
-                        <notebook>
-                            <page string="Alerts" name="alerts">
-                                <field name="alert_ids" readonly="1">
-                                    <list decoration-danger="severity == 'critical'"
-                                          decoration-warning="severity == 'high'">
-                                        <field name="reference"/>
-                                        <field name="name"/>
-                                        <field name="severity"/>
-                                        <field name="alert_type"/>
-                                        <field name="state"/>
-                                        <field name="create_date"/>
-                                        <field name="sla_breached"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Vulnerabilities" name="vulns">
-                                <field name="vulnerability_ids">
-                                    <list decoration-danger="severity == 'critical'"
-                                          decoration-warning="severity == 'high'">
-                                        <field name="cve_id"/>
-                                        <field name="name"/>
-                                        <field name="cvss_score"/>
-                                        <field name="severity"/>
-                                        <field name="state"/>
-                                        <field name="detected_date"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Recent Logs" name="logs">
-                                <field name="log_ids" readonly="1" limit="50">
-                                    <list>
-                                        <field name="timestamp"/>
-                                        <field name="event_type"/>
-                                        <field name="severity"
-                                               decoration-danger="severity == 'critical'"
-                                               decoration-warning="severity == 'high'"/>
-                                        <field name="description"/>
-                                        <field name="source_ip"/>
-                                        <field name="user_name"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Notes" name="notes">
-                                <field name="notes"/>
-                            </page>
-                        </notebook>
                     </sheet>
-
-                    <!-- Chatter -->
                     <div class="oe_chatter">
                         <field name="message_follower_ids"/>
                         <field name="activity_ids"/>
@@ -269,72 +60,43 @@
                 </form>
             </field>
         </record>
-
-        <!-- ══════════════════════════════════════════════════════════════════
-             SEARCH VIEW
-        ══════════════════════════════════════════════════════════════════════ -->
         <record id="view_cyber_device_search" model="ir.ui.view">
             <field name="name">cyber.device.search</field>
             <field name="model">cyber.device</field>
             <field name="arch" type="xml">
                 <search string="Search Devices">
-                    <field name="name" string="Device Name"/>
-                    <field name="ip_address" string="IP Address"/>
-                    <field name="hostname" string="Hostname"/>
+                    <field name="name"/>
+                    <field name="ip_address"/>
                     <separator/>
-                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-                    <filter string="Critical Risk" name="critical_risk" domain="[('risk_score', '>=', 70)]"/>
-                    <filter string="Has Open Alerts" name="has_alerts" domain="[('alert_count', '>', 0)]"/>
-                    <filter string="Agent Disconnected" name="disconnected"
-                            domain="[('agent_status', '=', 'disconnected')]"/>
-                    <separator/>
-                    <filter string="Workstations" name="workstations" domain="[('device_type', '=', 'workstation')]"/>
-                    <filter string="Servers" name="servers" domain="[('device_type', '=', 'server')]"/>
-                    <separator/>
+                    <filter string="Workstations" name="workstations"
+                            domain="[('device_type', '=', 'workstation')]"/>
+                    <filter string="Servers" name="servers"
+                            domain="[('device_type', '=', 'server')]"/>
                     <group expand="0" string="Group By">
-                        <filter string="Type" name="group_type" context="{'group_by': 'device_type'}"/>
-                        <filter string="Department" name="group_dept" context="{'group_by': 'department'}"/>
-                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
-                        <filter string="Criticality" name="group_crit" context="{'group_by': 'criticality'}"/>
+                        <filter string="Type" name="group_type"
+                                context="{'group_by': 'device_type'}"/>
+                        <filter string="Department" name="group_dept"
+                                context="{'group_by': 'department'}"/>
                     </group>
                 </search>
             </field>
         </record>
-
-        <!-- ══════════════════════════════════════════════════════════════════
-             ACTIONS
-        ══════════════════════════════════════════════════════════════════════ -->
         <record id="action_cyber_devices" model="ir.actions.act_window">
             <field name="name">All Devices</field>
             <field name="res_model">cyber.device</field>
-            <field name="view_mode">kanban,list,form</field>
-            <field name="search_view_id" ref="view_cyber_device_search"/>
-            <field name="context">{'search_default_active': 1}</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No devices registered yet.
-                </p>
-                <p>Add your first device to start monitoring.</p>
-            </field>
+            <field name="view_mode">list,form</field>
         </record>
-
         <record id="action_cyber_workstations" model="ir.actions.act_window">
             <field name="name">Workstations</field>
             <field name="res_model">cyber.device</field>
-            <field name="view_mode">kanban,list,form</field>
-            <field name="search_view_id" ref="view_cyber_device_search"/>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('device_type', 'in', ['workstation', 'laptop'])]</field>
-            <field name="context">{'search_default_active': 1}</field>
         </record>
-
         <record id="action_cyber_servers" model="ir.actions.act_window">
             <field name="name">Servers</field>
             <field name="res_model">cyber.device</field>
-            <field name="view_mode">kanban,list,form</field>
-            <field name="search_view_id" ref="view_cyber_device_search"/>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('device_type', 'in', ['server', 'virtual'])]</field>
-            <field name="context">{'search_default_active': 1}</field>
         </record>
-
     </data>
 </odoo>

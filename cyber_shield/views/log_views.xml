@@ -7,9 +7,7 @@
 <odoo>
     <data>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             CYBER.LOG — VIEWS
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- CYBER.LOG LIST -->
         <record id="view_cyber_log_list" model="ir.ui.view">
             <field name="name">cyber.log.list</field>
             <field name="model">cyber.log</field>
@@ -23,19 +21,17 @@
                     <field name="event_type" string="Event"/>
                     <field name="severity" string="Severity"
                            decoration-danger="severity == 'critical'"
-                           decoration-warning="severity == 'high'"
-                           decoration-info="severity == 'medium'"/>
+                           decoration-warning="severity == 'high'"/>
                     <field name="description" string="Description"/>
                     <field name="user_name" string="User"/>
                     <field name="source_ip" string="Source IP"/>
                     <field name="mitre_tactic" string="MITRE Tactic" optional="show"/>
-                    <field name="mitre_technique" string="MITRE Tech." optional="show"/>
-                    <field name="wazuh_rule_id" string="Rule ID" optional="hide"/>
                     <field name="alert_id" string="Alert" optional="show"/>
                 </list>
             </field>
         </record>
 
+        <!-- CYBER.LOG FORM -->
         <record id="view_cyber_log_form" model="ir.ui.view">
             <field name="name">cyber.log.form</field>
             <field name="model">cyber.log</field>
@@ -44,7 +40,6 @@
                     <sheet>
                         <div class="alert alert-info">
                             <strong>🔒 IMMUTABLE RECORD</strong> — This log entry cannot be modified or deleted.
-                            Integrity verified via HMAC-SHA256 hash chaining.
                         </div>
                         <group string="Event Identity">
                             <group>
@@ -79,16 +74,12 @@
                         <group string="Description">
                             <field name="description" readonly="1" nolabel="1"/>
                         </group>
-                        <group string="Integrity Chain"
-                               groups="cyber_shield.group_cyber_admin">
+                        <group string="Integrity Chain" groups="cyber_shield.group_cyber_admin">
                             <field name="event_hash" readonly="1"/>
                             <field name="previous_hash" readonly="1"/>
                         </group>
                         <group string="Alert Generated">
                             <field name="alert_id" readonly="1"/>
-                        </group>
-                        <group string="Raw Data" groups="cyber_shield.group_cyber_admin">
-                            <field name="raw_data" readonly="1" nolabel="1" widget="text"/>
                         </group>
                     </sheet>
                     <footer>
@@ -99,6 +90,7 @@
             </field>
         </record>
 
+        <!-- CYBER.LOG SEARCH -->
         <record id="view_cyber_log_search" model="ir.ui.view">
             <field name="name">cyber.log.search</field>
             <field name="model">cyber.log</field>
@@ -111,13 +103,10 @@
                     <separator/>
                     <filter string="Critical" name="critical" domain="[('severity','=','critical')]"/>
                     <filter string="High" name="high" domain="[('severity','=','high')]"/>
-                    <filter string="Today" name="today" domain="[('timestamp','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
                     <separator/>
                     <group expand="0" string="Group By">
                         <filter string="Device" name="group_device" context="{'group_by': 'device_id'}"/>
-                        <filter string="Event Type" name="group_event" context="{'group_by': 'event_type'}"/>
                         <filter string="Severity" name="group_severity" context="{'group_by': 'severity'}"/>
-                        <filter string="MITRE Tactic" name="group_mitre" context="{'group_by': 'mitre_tactic'}"/>
                     </group>
                 </search>
             </field>
@@ -137,9 +126,7 @@
             <field name="domain">[('severity', 'in', ['critical', 'high'])]</field>
         </record>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             CYBER.ALERT — VIEWS
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- CYBER.ALERT LIST -->
         <record id="view_cyber_alert_list" model="ir.ui.view">
             <field name="name">cyber.alert.list</field>
             <field name="model">cyber.alert</field>
@@ -158,16 +145,15 @@
                     <field name="state" string="State"
                            decoration-success="state == 'resolved'"
                            decoration-muted="state == 'false_positive'"/>
-                    <field name="mitre_tactic" string="Tactic" optional="show"/>
                     <field name="assigned_to_id" string="Assigned To"/>
-                    <field name="sla_deadline" string="SLA Deadline"
-                           decoration-danger="sla_breached == True"/>
+                    <field name="sla_deadline" string="SLA Deadline"/>
                     <field name="sla_breached" string="SLA" widget="boolean"/>
                     <field name="create_date" string="Created"/>
                 </list>
             </field>
         </record>
 
+        <!-- CYBER.ALERT FORM -->
         <record id="view_cyber_alert_form" model="ir.ui.view">
             <field name="name">cyber.alert.form</field>
             <field name="model">cyber.alert</field>
@@ -176,35 +162,30 @@
                     <header>
                         <button name="action_acknowledge" type="object"
                                 string="Acknowledge" class="btn-secondary"
-                                attrs="{'invisible': [('state', '!=', 'new')]}"/>
+                                invisible="state != 'new'"/>
                         <button name="action_investigate" type="object"
                                 string="Investigate" class="btn-primary"
-                                attrs="{'invisible': [('state', 'not in', ['new', 'acknowledged'])]}"/>
+                                invisible="state not in ['new', 'acknowledged']"/>
                         <button name="action_contain" type="object"
                                 string="Contain" class="btn-warning"
-                                attrs="{'invisible': [('state', '!=', 'investigating')]}"/>
+                                invisible="state != 'investigating'"/>
                         <button name="action_resolve" type="object"
                                 string="Resolve" class="btn-success"
-                                attrs="{'invisible': [('state', 'not in', ['acknowledged', 'investigating', 'contained'])]}"/>
+                                invisible="state not in ['acknowledged', 'investigating', 'contained']"/>
                         <button name="action_false_positive" type="object"
                                 string="False Positive" class="btn-secondary"
-                                attrs="{'invisible': [('state', 'in', ['resolved', 'false_positive'])]}"/>
+                                invisible="state in ['resolved', 'false_positive']"/>
                         <field name="state" widget="statusbar"
                                statusbar_visible="new,acknowledged,investigating,contained,resolved"/>
                     </header>
                     <sheet>
-                        <!-- SLA breach banner -->
-                        <div class="alert alert-danger" role="alert"
-                             attrs="{'invisible': [('sla_breached', '=', False)]}">
+                        <div class="alert alert-danger" invisible="not sla_breached">
                             <strong>⚠️ SLA BREACHED</strong> — This alert has exceeded its response deadline.
                         </div>
-
                         <div class="oe_title">
-                            <span class="o_field_widget o_field_badge" name="severity"/>
                             <h1><field name="name"/></h1>
                             <h3 style="color:#64748b;"><field name="reference" readonly="1"/></h3>
                         </div>
-
                         <group>
                             <group string="Classification">
                                 <field name="severity"/>
@@ -219,7 +200,6 @@
                                 <field name="destination_port"/>
                             </group>
                         </group>
-
                         <group string="SLA &amp; Assignment">
                             <group>
                                 <field name="assigned_to_id"/>
@@ -233,7 +213,6 @@
                                 <field name="resolved_date" readonly="1"/>
                             </group>
                         </group>
-
                         <notebook>
                             <page string="Description &amp; Remediation">
                                 <group string="Description">
@@ -242,8 +221,7 @@
                                 <group string="Recommended Remediation">
                                     <field name="remediation" nolabel="1"/>
                                 </group>
-                                <group string="Resolution Notes"
-                                       attrs="{'invisible': [('state', 'not in', ['resolved', 'false_positive'])]}">
+                                <group string="Resolution Notes">
                                     <field name="resolution_notes" nolabel="1"/>
                                 </group>
                             </page>
@@ -255,15 +233,12 @@
                             </page>
                         </notebook>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
+                    <chatter/>
                 </form>
             </field>
         </record>
 
+        <!-- CYBER.ALERT SEARCH -->
         <record id="view_cyber_alert_search" model="ir.ui.view">
             <field name="name">cyber.alert.search</field>
             <field name="model">cyber.alert</field>
@@ -283,7 +258,6 @@
                         <filter string="Severity" name="group_severity" context="{'group_by': 'severity'}"/>
                         <filter string="Device" name="group_device" context="{'group_by': 'device_id'}"/>
                         <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
-                        <filter string="Type" name="group_type" context="{'group_by': 'alert_type'}"/>
                     </group>
                 </search>
             </field>
@@ -301,7 +275,6 @@
             <field name="res_model">cyber.alert</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[('state', 'not in', ['resolved', 'false_positive'])]</field>
-            <field name="context">{'search_default_open': 1}</field>
         </record>
 
         <record id="action_cyber_alerts_critical" model="ir.actions.act_window">
@@ -311,9 +284,7 @@
             <field name="domain">[('severity', '=', 'critical'), ('state', 'not in', ['resolved', 'false_positive'])]</field>
         </record>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             CYBER.VULNERABILITY — VIEWS
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- CYBER.VULNERABILITY LIST -->
         <record id="view_cyber_vuln_list" model="ir.ui.view">
             <field name="name">cyber.vulnerability.list</field>
             <field name="model">cyber.vulnerability</field>
@@ -325,18 +296,16 @@
                     <field name="cve_id" string="CVE ID"/>
                     <field name="name" string="Vulnerability"/>
                     <field name="device_id" string="Device"/>
-                    <field name="cvss_score" string="CVSS"
-                           decoration-danger="cvss_score &gt;= 9"
-                           decoration-warning="cvss_score &gt;= 7"/>
+                    <field name="cvss_score" string="CVSS"/>
                     <field name="severity" string="Severity"/>
                     <field name="affected_component" string="Component"/>
                     <field name="state" string="State"/>
                     <field name="detected_date" string="Detected"/>
-                    <field name="patched_date" string="Patched" optional="show"/>
                 </list>
             </field>
         </record>
 
+        <!-- CYBER.VULNERABILITY FORM -->
         <record id="view_cyber_vuln_form" model="ir.ui.view">
             <field name="name">cyber.vulnerability.form</field>
             <field name="model">cyber.vulnerability</field>
@@ -349,9 +318,7 @@
                     <sheet>
                         <div class="oe_title">
                             <h1><field name="name"/></h1>
-                            <h3 style="color:#64748b;">
-                                <field name="cve_id" placeholder="CVE-YYYY-XXXXX"/>
-                            </h3>
+                            <h3 style="color:#64748b;"><field name="cve_id" placeholder="CVE-YYYY-XXXXX"/></h3>
                         </div>
                         <group>
                             <group string="Classification">
@@ -380,11 +347,7 @@
                             </page>
                         </notebook>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
+                    <chatter/>
                 </form>
             </field>
         </record>
@@ -402,9 +365,7 @@
             <field name="domain">[('state', '=', 'open')]</field>
         </record>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             CYBER.INCIDENT — VIEWS
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- CYBER.INCIDENT LIST -->
         <record id="view_cyber_incident_list" model="ir.ui.view">
             <field name="name">cyber.incident.list</field>
             <field name="model">cyber.incident</field>
@@ -423,11 +384,11 @@
                     <field name="rgpd_notification_required" string="RGPD" widget="boolean"/>
                     <field name="alert_count" string="Alerts"/>
                     <field name="detected_date" string="Detected"/>
-                    <field name="closed_date" string="Closed" optional="show"/>
                 </list>
             </field>
         </record>
 
+        <!-- CYBER.INCIDENT FORM -->
         <record id="view_cyber_incident_form" model="ir.ui.view">
             <field name="name">cyber.incident.form</field>
             <field name="model">cyber.incident</field>
@@ -438,23 +399,18 @@
                                statusbar_visible="detected,reported,acknowledged,analyzing,containing,recovering,closed"/>
                         <button name="action_close" type="object"
                                 string="Close Incident" class="btn-success"
-                                attrs="{'invisible': [('state', '=', 'closed')]}"/>
+                                invisible="state == 'closed'"/>
                     </header>
                     <sheet>
-                        <!-- RGPD warning -->
-                        <div class="alert alert-danger"
-                             attrs="{'invisible': [('rgpd_notification_required', '=', False)]}">
+                        <div class="alert alert-danger" invisible="not rgpd_notification_required">
                             <strong>⚠️ RGPD NOTIFICATION REQUIRED</strong> —
-                            This incident may involve personal data. Notify AEPD within 72 hours.
-                            <field name="rgpd_notification_sent" string="Notification Sent"/> ·
-                            <field name="rgpd_notification_date" string="Date Sent"/>
+                            Notify AEPD within 72 hours.
+                            <field name="rgpd_notification_sent" string="Sent"/>
                         </div>
-
                         <div class="oe_title">
                             <h1><field name="name"/></h1>
                             <h3 style="color:#64748b;"><field name="reference" readonly="1"/></h3>
                         </div>
-
                         <group>
                             <group string="Classification">
                                 <field name="severity"/>
@@ -468,7 +424,6 @@
                                 <field name="rgpd_notification_required"/>
                             </group>
                         </group>
-
                         <notebook>
                             <page string="Description &amp; Impact">
                                 <group string="Incident Description">
@@ -477,18 +432,15 @@
                                 <group string="Business Impact">
                                     <field name="impact" nolabel="1"/>
                                 </group>
-                                <group string="Event Timeline">
-                                    <field name="timeline" nolabel="1"/>
-                                </group>
                             </page>
                             <page string="Response Actions">
-                                <group string="Containment Actions">
+                                <group string="Containment">
                                     <field name="containment_actions" nolabel="1"/>
                                 </group>
-                                <group string="Eradication Actions">
+                                <group string="Eradication">
                                     <field name="eradication_actions" nolabel="1"/>
                                 </group>
-                                <group string="Recovery Actions">
+                                <group string="Recovery">
                                     <field name="recovery_actions" nolabel="1"/>
                                 </group>
                             </page>
@@ -507,11 +459,7 @@
                             </page>
                         </notebook>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
+                    <chatter/>
                 </form>
             </field>
         </record>
@@ -529,9 +477,7 @@
             <field name="domain">[('state', '!=', 'closed')]</field>
         </record>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             CYBER.REPORT — VIEWS
-        ══════════════════════════════════════════════════════════════════════ -->
+        <!-- CYBER.REPORT LIST -->
         <record id="view_cyber_report_list" model="ir.ui.view">
             <field name="name">cyber.report.list</field>
             <field name="model">cyber.report</field>
@@ -551,6 +497,7 @@
             </field>
         </record>
 
+        <!-- CYBER.REPORT FORM -->
         <record id="view_cyber_report_form" model="ir.ui.view">
             <field name="name">cyber.report.form</field>
             <field name="model">cyber.report</field>
@@ -559,10 +506,10 @@
                     <header>
                         <button name="action_generate" type="object"
                                 string="Generate Report" class="btn-primary"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                                invisible="state != 'draft'"/>
                         <button name="action_approve" type="object"
                                 string="Approve" class="btn-success"
-                                attrs="{'invisible': [('state', '!=', 'generated')]}"
+                                invisible="state != 'generated'"
                                 groups="cyber_shield.group_cyber_admin"/>
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,generated,approved"/>
@@ -591,10 +538,7 @@
                             <field name="summary" nolabel="1"/>
                         </group>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="message_ids"/>
-                    </div>
+                    <chatter/>
                 </form>
             </field>
         </record>

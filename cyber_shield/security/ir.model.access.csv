@@ -1,58 +1,47 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-# ── CYBER.DEVICE ──────────────────────────────────────────────────────────────
 access_cyber_device_admin,cyber.device admin,model_cyber_device,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_device_senior,cyber.device senior analyst,model_cyber_device,cyber_shield.group_cyber_senior_analyst,1,1,1,0
 access_cyber_device_analyst,cyber.device analyst,model_cyber_device,cyber_shield.group_cyber_analyst,1,0,0,0
 access_cyber_device_auditor,cyber.device auditor,model_cyber_device,cyber_shield.group_cyber_auditor,1,0,0,0
 access_cyber_device_readonly,cyber.device readonly,model_cyber_device,cyber_shield.group_cyber_readonly,1,0,0,0
-# ── CYBER.LOG ─────────────────────────────────────────────────────────────────
 access_cyber_log_admin,cyber.log admin,model_cyber_log,cyber_shield.group_cyber_admin,1,0,1,0
 access_cyber_log_senior,cyber.log senior analyst,model_cyber_log,cyber_shield.group_cyber_senior_analyst,1,0,0,0
 access_cyber_log_analyst,cyber.log analyst,model_cyber_log,cyber_shield.group_cyber_analyst,1,0,0,0
 access_cyber_log_auditor,cyber.log auditor,model_cyber_log,cyber_shield.group_cyber_auditor,1,0,0,0
 access_cyber_log_readonly,cyber.log readonly,model_cyber_log,cyber_shield.group_cyber_readonly,0,0,0,0
-# ── CYBER.ALERT ───────────────────────────────────────────────────────────────
 access_cyber_alert_admin,cyber.alert admin,model_cyber_alert,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_alert_senior,cyber.alert senior analyst,model_cyber_alert,cyber_shield.group_cyber_senior_analyst,1,1,1,0
 access_cyber_alert_analyst,cyber.alert analyst,model_cyber_alert,cyber_shield.group_cyber_analyst,1,1,1,0
 access_cyber_alert_auditor,cyber.alert auditor,model_cyber_alert,cyber_shield.group_cyber_auditor,1,0,0,0
 access_cyber_alert_readonly,cyber.alert readonly,model_cyber_alert,cyber_shield.group_cyber_readonly,1,0,0,0
-# ── CYBER.VULNERABILITY ───────────────────────────────────────────────────────
 access_cyber_vuln_admin,cyber.vulnerability admin,model_cyber_vulnerability,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_vuln_senior,cyber.vulnerability senior,model_cyber_vulnerability,cyber_shield.group_cyber_senior_analyst,1,1,1,0
 access_cyber_vuln_analyst,cyber.vulnerability analyst,model_cyber_vulnerability,cyber_shield.group_cyber_analyst,1,1,0,0
 access_cyber_vuln_auditor,cyber.vulnerability auditor,model_cyber_vulnerability,cyber_shield.group_cyber_auditor,1,0,0,0
 access_cyber_vuln_readonly,cyber.vulnerability readonly,model_cyber_vulnerability,cyber_shield.group_cyber_readonly,0,0,0,0
-# ── CYBER.INCIDENT ────────────────────────────────────────────────────────────
 access_cyber_incident_admin,cyber.incident admin,model_cyber_incident,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_incident_senior,cyber.incident senior,model_cyber_incident,cyber_shield.group_cyber_senior_analyst,1,1,1,0
 access_cyber_incident_analyst,cyber.incident analyst,model_cyber_incident,cyber_shield.group_cyber_analyst,1,1,1,0
 access_cyber_incident_auditor,cyber.incident auditor,model_cyber_incident,cyber_shield.group_cyber_auditor,1,0,0,0
 access_cyber_incident_readonly,cyber.incident readonly,model_cyber_incident,cyber_shield.group_cyber_readonly,0,0,0,0
-# ── CYBER.REPORT ──────────────────────────────────────────────────────────────
 access_cyber_report_admin,cyber.report admin,model_cyber_report,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_report_senior,cyber.report senior,model_cyber_report,cyber_shield.group_cyber_senior_analyst,1,1,1,0
 access_cyber_report_analyst,cyber.report analyst,model_cyber_report,cyber_shield.group_cyber_analyst,0,0,0,0
 access_cyber_report_auditor,cyber.report auditor,model_cyber_report,cyber_shield.group_cyber_auditor,1,1,1,0
 access_cyber_report_readonly,cyber.report readonly,model_cyber_report,cyber_shield.group_cyber_readonly,0,0,0,0
-# ── CYBER.NOTIFICATION.CHANNEL ────────────────────────────────────────────────
 access_cyber_channel_admin,cyber.notification.channel admin,model_cyber_notification_channel,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_channel_senior,cyber.notification.channel senior,model_cyber_notification_channel,cyber_shield.group_cyber_senior_analyst,1,1,0,0
 access_cyber_channel_analyst,cyber.notification.channel analyst,model_cyber_notification_channel,cyber_shield.group_cyber_analyst,1,0,0,0
-# ── CYBER.NOTIFICATION.TEMPLATE ───────────────────────────────────────────────
 access_cyber_template_admin,cyber.notification.template admin,model_cyber_notification_template,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_template_senior,cyber.notification.template senior,model_cyber_notification_template,cyber_shield.group_cyber_senior_analyst,1,1,0,0
 access_cyber_template_analyst,cyber.notification.template analyst,model_cyber_notification_template,cyber_shield.group_cyber_analyst,1,0,0,0
-# ── CYBER.ESCALATION.RULE ─────────────────────────────────────────────────────
 access_cyber_rule_admin,cyber.escalation.rule admin,model_cyber_escalation_rule,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_rule_senior,cyber.escalation.rule senior,model_cyber_escalation_rule,cyber_shield.group_cyber_senior_analyst,1,1,0,0
 access_cyber_rule_analyst,cyber.escalation.rule analyst,model_cyber_escalation_rule,cyber_shield.group_cyber_analyst,1,0,0,0
-# ── CYBER.NOTIFICATION ────────────────────────────────────────────────────────
 access_cyber_notif_admin,cyber.notification admin,model_cyber_notification,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_notif_senior,cyber.notification senior,model_cyber_notification,cyber_shield.group_cyber_senior_analyst,1,0,0,0
 access_cyber_notif_analyst,cyber.notification analyst,model_cyber_notification,cyber_shield.group_cyber_analyst,1,0,0,0
 access_cyber_notif_auditor,cyber.notification auditor,model_cyber_notification,cyber_shield.group_cyber_auditor,1,0,0,0
-# ── CYBER.VT.ANALYSIS ─────────────────────────────────────────────────────────
 access_cyber_vt_admin,cyber.vt.analysis admin,model_cyber_vt_analysis,cyber_shield.group_cyber_admin,1,1,1,1
 access_cyber_vt_senior,cyber.vt.analysis senior,model_cyber_vt_analysis,cyber_shield.group_cyber_senior_analyst,1,0,1,0
 access_cyber_vt_analyst,cyber.vt.analysis analyst,model_cyber_vt_analysis,cyber_shield.group_cyber_analyst,1,0,0,0
