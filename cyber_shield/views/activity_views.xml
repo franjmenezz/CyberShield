@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CyberShield — Activity Monitor Views
+    Copyright (c) 2025 Francisco José Jiménez Pozo
+    All rights reserved. Proprietary and confidential.
+-->
+<odoo>
+    <data>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ACTIVITY — LIST VIEW (Timeline por dispositivo)
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="view_cyber_activity_list" model="ir.ui.view">
+            <field name="name">cyber.activity.list</field>
+            <field name="model">cyber.activity</field>
+            <field name="arch" type="xml">
+                <list string="Device Activity"
+                      create="false" edit="false" delete="false"
+                      decoration-danger="risk_flag == True"
+                      default_order="timestamp desc">
+                    <field name="timestamp" string="Time"/>
+                    <field name="device_id" string="Device"/>
+                    <field name="os_user" string="User"/>
+                    <field name="category" string="Category"/>
+                    <field name="action" string="Action"/>
+                    <field name="description" string="Description"/>
+                    <field name="app_name" string="Application" optional="show"/>
+                    <field name="file_name" string="File" optional="show"/>
+                    <field name="domain" string="Domain" optional="show"/>
+                    <field name="remote_ip" string="Remote IP" optional="hide"/>
+                    <field name="risk_flag" string="⚠️" widget="boolean"/>
+                    <field name="risk_reason" string="Risk" optional="show"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ACTIVITY — FORM VIEW
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="view_cyber_activity_form" model="ir.ui.view">
+            <field name="name">cyber.activity.form</field>
+            <field name="model">cyber.activity</field>
+            <field name="arch" type="xml">
+                <form string="Activity Record" create="false" edit="false" delete="false">
+                    <sheet>
+                        <div class="alert alert-danger" role="alert"
+                             invisible="not risk_flag">
+                            <strong>⚠️ RISK FLAGGED</strong> — <field name="risk_reason" readonly="1"/>
+                        </div>
+                        <div class="oe_title">
+                            <h1><field name="description" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group string="Event">
+                                <field name="timestamp" readonly="1"/>
+                                <field name="device_id" readonly="1"/>
+                                <field name="os_user" readonly="1"/>
+                                <field name="category" readonly="1"/>
+                                <field name="action" readonly="1"/>
+                            </group>
+                            <group string="Risk">
+                                <field name="risk_flag" readonly="1"/>
+                                <field name="risk_reason" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Process / Application"
+                                  invisible="category not in ['process']">
+                                <group>
+                                    <group>
+                                        <field name="app_name" readonly="1"/>
+                                        <field name="app_path" readonly="1"/>
+                                        <field name="process_id" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="parent_process" readonly="1"/>
+                                        <field name="command_line" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="File Activity"
+                                  invisible="category not in ['file']">
+                                <group>
+                                    <group>
+                                        <field name="file_path" readonly="1"/>
+                                        <field name="file_name" readonly="1"/>
+                                        <field name="file_extension" readonly="1"/>
+                                        <field name="file_size" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="destination_path" readonly="1"/>
+                                        <field name="app_name" readonly="1" string="Opened with"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Network / Web"
+                                  invisible="category not in ['network']">
+                                <group>
+                                    <group>
+                                        <field name="url" readonly="1" widget="url"/>
+                                        <field name="domain" readonly="1"/>
+                                        <field name="browser" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="remote_ip" readonly="1"/>
+                                        <field name="remote_port" readonly="1"/>
+                                        <field name="protocol" readonly="1"/>
+                                        <field name="bytes_sent" readonly="1"/>
+                                        <field name="bytes_recv" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="USB Device"
+                                  invisible="category not in ['usb']">
+                                <group>
+                                    <field name="usb_device_name" readonly="1"/>
+                                    <field name="usb_serial" readonly="1"/>
+                                    <field name="usb_drive_letter" readonly="1"/>
+                                    <field name="file_path" readonly="1" string="File Copied"/>
+                                </group>
+                            </page>
+                            <page string="System / Software"
+                                  invisible="category not in ['system']">
+                                <group>
+                                    <field name="software_name" readonly="1"/>
+                                    <field name="software_version" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Print Job"
+                                  invisible="category not in ['print']">
+                                <group>
+                                    <field name="printer_name" readonly="1"/>
+                                    <field name="print_document" readonly="1"/>
+                                    <field name="print_pages" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Raw Data"
+                                  groups="cyber_shield.group_cyber_admin">
+                                <field name="raw_data" readonly="1" widget="text"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ACTIVITY — SEARCH VIEW
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="view_cyber_activity_search" model="ir.ui.view">
+            <field name="name">cyber.activity.search</field>
+            <field name="model">cyber.activity</field>
+            <field name="arch" type="xml">
+                <search string="Search Activity">
+                    <field name="device_id" string="Device"/>
+                    <field name="os_user" string="User"/>
+                    <field name="app_name" string="Application"/>
+                    <field name="file_name" string="File"/>
+                    <field name="domain" string="Domain"/>
+                    <field name="description" string="Description"/>
+                    <separator/>
+                    <filter string="⚠️ Risk Flagged" name="risk"
+                            domain="[('risk_flag','=',True)]"/>
+                    <filter string="🔐 Authentication" name="auth"
+                            domain="[('category','=','auth')]"/>
+                    <filter string="⚙️ Processes" name="process"
+                            domain="[('category','=','process')]"/>
+                    <filter string="📄 Files" name="files"
+                            domain="[('category','=','file')]"/>
+                    <filter string="🌐 Network/Web" name="network"
+                            domain="[('category','=','network')]"/>
+                    <filter string="🔌 USB" name="usb"
+                            domain="[('category','=','usb')]"/>
+                    <filter string="💻 System" name="system"
+                            domain="[('category','=','system')]"/>
+                    <separator/>
+                    <filter string="Today" name="today"
+                            domain="[('timestamp','&gt;=',datetime.datetime.combine(context_today(),datetime.time(0,0,0)))]"/>
+                    <filter string="This Week" name="week"
+                            domain="[('timestamp','&gt;=',(context_today()-datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Device" name="group_device"
+                                context="{'group_by': 'device_id'}"/>
+                        <filter string="User" name="group_user"
+                                context="{'group_by': 'os_user'}"/>
+                        <filter string="Category" name="group_category"
+                                context="{'group_by': 'category'}"/>
+                        <filter string="Application" name="group_app"
+                                context="{'group_by': 'app_name'}"/>
+                        <filter string="Date" name="group_date"
+                                context="{'group_by': 'timestamp:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             ACTIONS
+        ══════════════════════════════════════════════════════════════════════ -->
+        <record id="action_cyber_activity" model="ir.actions.act_window">
+            <field name="name">All Activity</field>
+            <field name="res_model">cyber.activity</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_cyber_activity_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No activity recorded yet.
+                </p>
+                <p>Install the CyberShield agent on your devices to start monitoring.</p>
+            </field>
+        </record>
+
+        <record id="action_cyber_activity_risk" model="ir.actions.act_window">
+            <field name="name">Risk Flagged Activity</field>
+            <field name="res_model">cyber.activity</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('risk_flag','=',True)]</field>
+        </record>
+
+        <record id="action_cyber_activity_web" model="ir.actions.act_window">
+            <field name="name">Web Activity</field>
+            <field name="res_model">cyber.activity</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('category','=','network'),('action','=','url_visit')]</field>
+            <field name="context">{'search_default_network': 1}</field>
+        </record>
+
+        <record id="action_cyber_activity_files" model="ir.actions.act_window">
+            <field name="name">File Activity</field>
+            <field name="res_model">cyber.activity</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('category','=','file')]</field>
+        </record>
+
+        <record id="action_cyber_activity_usb" model="ir.actions.act_window">
+            <field name="name">USB Activity</field>
+            <field name="res_model">cyber.activity</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('category','=','usb')]</field>
+        </record>
+
+    </data>
+</odoo>

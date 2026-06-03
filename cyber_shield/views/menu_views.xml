@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    CyberShield — Menu Structure
+    CyberShield — Menu Structure v1.2
     Copyright (c) 2025 Francisco José Jiménez Pozo
     All rights reserved. Proprietary and confidential.
 -->
@@ -29,9 +29,29 @@
                   parent="menu_cyber_devices" action="action_cyber_devices"
                   sequence="3" groups="cyber_shield.group_cyber_analyst"/>
 
+        <!-- 🖥️ ACTIVITY MONITOR -->
+        <menuitem id="menu_cyber_activity" name="🖥️ Activity Monitor"
+                  parent="menu_cyber_shield_root" sequence="3"
+                  groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_activity_all" name="All Activity"
+                  parent="menu_cyber_activity" action="action_cyber_activity"
+                  sequence="1" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_activity_risk" name="⚠️ Risk Flagged"
+                  parent="menu_cyber_activity" action="action_cyber_activity_risk"
+                  sequence="2" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_activity_web" name="🌐 Web Activity"
+                  parent="menu_cyber_activity" action="action_cyber_activity_web"
+                  sequence="3" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_activity_files" name="📄 File Activity"
+                  parent="menu_cyber_activity" action="action_cyber_activity_files"
+                  sequence="4" groups="cyber_shield.group_cyber_analyst"/>
+        <menuitem id="menu_cyber_activity_usb" name="🔌 USB Activity"
+                  parent="menu_cyber_activity" action="action_cyber_activity_usb"
+                  sequence="5" groups="cyber_shield.group_cyber_analyst"/>
+
         <!-- LOGS -->
         <menuitem id="menu_cyber_logs" name="Activity Logs"
-                  parent="menu_cyber_shield_root" sequence="3"
+                  parent="menu_cyber_shield_root" sequence="4"
                   groups="cyber_shield.group_cyber_analyst"/>
         <menuitem id="menu_cyber_logs_all" name="All Logs"
                   parent="menu_cyber_logs" action="action_cyber_logs"
@@ -42,7 +62,7 @@
 
         <!-- ALERTS -->
         <menuitem id="menu_cyber_alerts" name="Alerts"
-                  parent="menu_cyber_shield_root" sequence="4"
+                  parent="menu_cyber_shield_root" sequence="5"
                   groups="cyber_shield.group_cyber_readonly"/>
         <menuitem id="menu_cyber_alerts_all" name="All Alerts"
                   parent="menu_cyber_alerts" action="action_cyber_alerts"
@@ -56,7 +76,7 @@
 
         <!-- VULNERABILITIES -->
         <menuitem id="menu_cyber_vulnerabilities" name="Vulnerabilities"
-                  parent="menu_cyber_shield_root" sequence="5"
+                  parent="menu_cyber_shield_root" sequence="6"
                   groups="cyber_shield.group_cyber_analyst"/>
         <menuitem id="menu_cyber_vulns_all" name="All Vulnerabilities"
                   parent="menu_cyber_vulnerabilities" action="action_cyber_vulnerabilities"
@@ -67,7 +87,7 @@
 
         <!-- INCIDENTS -->
         <menuitem id="menu_cyber_incidents" name="Incidents"
-                  parent="menu_cyber_shield_root" sequence="6"
+                  parent="menu_cyber_shield_root" sequence="7"
                   groups="cyber_shield.group_cyber_analyst"/>
         <menuitem id="menu_cyber_incidents_all" name="All Incidents"
                   parent="menu_cyber_incidents" action="action_cyber_incidents"
@@ -76,9 +96,9 @@
                   parent="menu_cyber_incidents" action="action_cyber_incidents_open"
                   sequence="2" groups="cyber_shield.group_cyber_analyst"/>
 
-        <!-- 🦠 VIRUSTOTAL -->
+        <!-- VIRUSTOTAL -->
         <menuitem id="menu_cyber_virustotal" name="🦠 VirusTotal"
-                  parent="menu_cyber_shield_root" sequence="7"
+                  parent="menu_cyber_shield_root" sequence="8"
                   groups="cyber_shield.group_cyber_analyst"/>
         <menuitem id="menu_cyber_vt_all" name="All Analyses"
                   parent="menu_cyber_virustotal" action="action_cyber_vt_analyses"
@@ -87,9 +107,9 @@
                   parent="menu_cyber_virustotal" action="action_cyber_vt_malicious"
                   sequence="2" groups="cyber_shield.group_cyber_analyst"/>
 
-        <!-- 📣 NOTIFICATION CENTER -->
+        <!-- NOTIFICATION CENTER -->
         <menuitem id="menu_cyber_notifications" name="📣 Notification Center"
-                  parent="menu_cyber_shield_root" sequence="8"
+                  parent="menu_cyber_shield_root" sequence="9"
                   groups="cyber_shield.group_cyber_analyst"/>
         <menuitem id="menu_cyber_notif_history" name="Notification History"
                   parent="menu_cyber_notifications" action="action_cyber_notifications"
@@ -109,7 +129,7 @@
 
         <!-- REPORTS -->
         <menuitem id="menu_cyber_reports" name="Reports"
-                  parent="menu_cyber_shield_root" sequence="9"
+                  parent="menu_cyber_shield_root" sequence="10"
                   groups="cyber_shield.group_cyber_auditor"/>
         <menuitem id="menu_cyber_reports_all" name="Audit Reports"
                   parent="menu_cyber_reports" action="action_cyber_reports"
