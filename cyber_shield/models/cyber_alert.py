@@ -258,14 +258,20 @@ class CyberAlert(models.Model):
 
     def _auto_create_incident(self):
         """Auto-create incident for CRITICAL alerts."""
-        incident = self.env['cyber.incident'].sudo().create({
-            'name': f'[AUTO] {self.name}',
-            'device_id': self.device_id.id,
-            'severity': 'critical',
-            'description': f'Auto-generated from CRITICAL alert: {self.reference}\n\n{self.description}',
-            'source': 'automatic',
-        })
-        self.incident_id = incident.id
-        self.message_post(
-            body=_('Incident %s automatically created from this CRITICAL alert.') % incident.reference
-        )
+        import logging
+        _log = logging.getLogger(__name__)
+        try:
+            incident = self.env['cyber.incident'].sudo().create({
+                'name': '[AUTO] %s' % self.name,
+                'device_id': self.device_id.id,
+                'severity': 'critical',
+                'description': 'Auto-generated from CRITICAL alert: %s\n\n%s' % (self.reference, self.description or ''),
+                'source': 'automatic',
+            })
+            self.env.cr.execute(
+                "UPDATE cyber_alert SET incident_id = %s WHERE id = %s",
+                (incident.id, self.id)
+            )
+            _log.info('CyberShield: Incident %s auto-created from alert %s', incident.reference, self.reference)
+        except Exception as e:
+            _log.warning('CyberShield: Could not auto-create incident: %s', str(e))
