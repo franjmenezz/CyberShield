@@ -24,7 +24,7 @@ import time
 from functools import wraps
 from collections import defaultdict
 
-from odoo import http
+from odoo import http, fields
 from odoo.http import request, Response
 
 _logger = logging.getLogger(__name__)
